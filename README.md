@@ -24,3 +24,4 @@ Each plan includes a name, a time range for each event, and detailed description
 ![Demo](./demo.gif)
 
 ## Live Website
+[Link](https://habit-u-j13.netlify.app/)
