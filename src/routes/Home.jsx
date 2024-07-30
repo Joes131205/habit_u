@@ -14,14 +14,21 @@ function Home() {
     const [newHabit, setNewHabit] = useState("");
     const [difficulty, setDifficulty] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [habitDifficulty, setHabitDifficulty] = useState(1);
+    const [isOn, setIsOn] = useState(false);
 
+    const handleToggle = () => {
+        console.log("clicked");
+        setIsOn((prevState) => !prevState);
+    };
     const navigate = useNavigate();
     const apiKey = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
 
     const addHabit = (e) => {
         e.preventDefault();
-        setHabit([...habit, newHabit]);
+        setHabit([...habit, [newHabit, habitDifficulty]]);
+        setHabitDifficulty(1);
         setNewHabit("");
     };
     const handleHabitChange = (e) => {
@@ -39,53 +46,82 @@ function Home() {
             try {
                 const instruction = `
 **Input:**
-1. An array of habits that the user wants to form. For example: ["I want to learn how to code", "I want to master cooking", "just wanted to learn a language, especially Chinese"]
+1. An array of habits, where each habit is specified as ["Habit name", difficulty from 1 - 3, in number]. For example: [["Learn Chinese", 2], ["Learn DSA", 1], ...].
 2. A difficulty level between 1 and 3:
    - 1 indicates not comfortable (beginner level)
    - 2 indicates middle comfort (intermediate level)
    - 3 indicates very comfortable (advanced level)
+3. A flag indicating whether the habits are part of a "task" or a "day-plan":
+   - "task" indicates a to-do list of activities
+   - "day-plan" indicates a detailed daily schedule
 
 **Output:**
-An array representing a highly detailed daily plan that incorporates all the habits mentioned, adjusted according to the provided difficulty level.
+An array representing a highly detailed plan or task list that incorporates all the habits mentioned, adjusted according to the provided difficulty level and flag.
 
 **Instructions:**
 
-1. **Determine Schedule:**
-   - Create a detailed schedule that covers a full day from morning to evening. Include specific time slots for each habit, ensuring there is enough time to meaningfully engage with each activity.
-   - For a balanced schedule, allocate appropriate time blocks based on the difficulty level. Ensure the plan is realistic and achievable within a day, and break down activities into detailed sub-tasks.
+1. **Determine Schedule or Task List:**
+   - For "day-plan": Create a detailed schedule that covers a full day from morning to evening. Include specific time slots for each habit, ensuring there is enough time to meaningfully engage with each activity.
+   - For "task": Create a to-do list with specific tasks related to each habit.
 
 2. **Adjust Habit Complexity Based on Difficulty Level:**
    - **Difficulty Level 1 (Beginner):**
-     - Focus on introductory activities and foundational tasks for each habit. For example, if the habit is "learn how to code," include basic tutorials, exercises, and introductory content.
+     - Focus on introductory activities and foundational tasks for each habit. For example, if the habit is "Learn Chinese," include basic vocabulary or simple exercises.
      - Include regular breaks and rest periods to avoid overwhelming the user. Provide simple, step-by-step instructions.
 
    - **Difficulty Level 2 (Intermediate):**
-     - Incorporate more advanced tasks and intermediate exercises. For example, if the habit is "master cooking," include detailed recipes with techniques, such as learning to cook a specific dish.
-     - Provide moderate breaks and allow flexibility in the schedule for varying task durations. Include intermediate-level challenges and exercises.
+     - Incorporate more advanced tasks and intermediate exercises. For example, if the habit is "Learn DSA," include intermediate algorithms and practice problems.
+     - Provide moderate breaks and allow flexibility in the schedule or task list. Include intermediate-level challenges and exercises.
 
    - **Difficulty Level 3 (Advanced):**
-     - Design a plan with advanced or expert-level tasks. For example, if the habit is "learn a language," include advanced lessons, immersive activities, and in-depth practice sessions.
+     - Design a plan or task list with advanced or expert-level tasks. For example, if the habit is "Learn Chinese," include advanced lessons, immersive activities, and complex exercises.
      - Ensure ample time for deep work with minimal breaks. Incorporate complex challenges and expert-level exercises.
 
-3. **Generate the Plan:**
-   - Begin with a morning routine, such as waking up, breakfast, and initial preparation.
-   - Schedule detailed time blocks for each habit based on the difficulty level:
+3. **Generate the Plan or Task List:**
+   - **For "day-plan":** Begin with a morning routine, such as waking up, breakfast, and initial preparation. Schedule detailed time blocks for each habit based on the difficulty level:
      - **Morning:** Allocate time for complex or high-energy tasks, such as intensive study or advanced practice.
      - **Afternoon:** Include tasks that require moderate focus or are less intensive, with detailed steps for each activity.
      - **Evening:** End with less demanding tasks or review sessions, including specific goals and outcomes.
-   - Ensure to include specific times and durations for each activity, with detailed sub-tasks. For example, if the habit is "Learn DSA," list specific algorithms like "Bubble Sort," and if the habit is "Learn Chinese," include specific vocabulary or grammar points like "HSK4 Vocab."
+   - **For "task":** Create a list of tasks for each habit, including specific actions or sub-tasks. Flatten the list into a single 1D array and mix the tasks for engagement.
+
+   - Ensure to include specific times and durations for each activity or detailed steps for tasks. For example, if the habit is "Learn Chinese," list specific vocabulary or grammar points.
 
 4. **Format the Output:**
-   - Present the plan in the format [ [Array], "Habit Name"]. 
-   The array should include detailed time slots and corresponding activities, with repetitive yet varied tasks to avoid boredom.
-   - Example format: 
+   - **For "day-plan":** Present the plan in the format '[
+                    [Array], "Habit Name"
+                ]'. The array should include detailed time slots and corresponding activities, with repetitive yet varied tasks to avoid boredom.
+   - **For "task":** Present the task list in the format '[
+                    [Array], "Habit Name"
+                ]' with mixed tasks for engagement. 
+   - The habit name must be AI generated based on the plan, the plan name must be simple.
+   - Example format for "day-plan":
      [
        ["6:00 AM - 6:30 AM: Wake Up and Morning Routine - Brush teeth, shower, and get dressed", "6:30 AM - 7:00 AM: Breakfast - Prepare and eat a healthy breakfast", "7:00 AM - 8:30 AM: Learn to Code - Beginner Tutorial on Variables (Read Chapter 1 and Complete Exercises)", "8:30 AM - 9:00 AM: Break - Take a walk or stretch", "9:00 AM - 11:00 AM: Cook Simple Recipe - Learn to make an omelet (Follow Recipe, Prepare Ingredients, Cook, and Clean Up)", "11:00 AM - 11:30 AM: Break - Relax or read", "11:30 AM - 1:00 PM: Study Basic Chinese - Learn HSK1 Vocab (Review List, Practice Pronunciation, Complete Quiz)", "1:00 PM - 2:00 PM: Lunch - Prepare and enjoy lunch", "2:00 PM - 4:00 PM: Practice Cooking Advanced Recipe - Learn to make a three-course meal (Plan Menu, Gather Ingredients, Cook Each Course, and Serve)", "4:00 PM - 4:30 PM: Break - Take a break or engage in light activity", "4:30 PM - 6:00 PM: Review Coding Concepts - Practice Bubble Sort (Read Article, Implement Algorithm, Test with Sample Data)", "6:00 PM - 7:00 PM: Dinner - Prepare and enjoy dinner", "7:00 PM - 8:30 PM: Study Advanced Chinese - Practice HSK4 Vocab (Review List, Engage in Conversation, Complete Advanced Exercises)", "8:30 PM - 9:00 PM: Relax and Wind Down - Light reading or meditation"], 
        "Habit Name"
      ]
 
+   - Example format for "task":
+     [
+       [
+            "1. Fluent in Chinese - Review HSK3 & 4 Vocabulary (Focus on Characters and Meanings)",
+            "2. Fluent in Chinese - Practice Speaking with a Language Partner (Use New Vocabulary)",
+            "3. Fluent in Chinese - Complete an HSK4 Reading Comprehension Exercise",
+            "4. Fluent in Chinese - Write a Short Paragraph in Chinese on a Familiar Topic",
+            "5. Fluent in Chinese - Listen to a Chinese Podcast (Intermediate Level) and Summarize",
+            "6. Learn DSA - Study Basic Data Structures (Arrays, Linked Lists)",
+            "7. Learn DSA - Implement a Linked List in Python/Java",
+            "8. Learn DSA - Learn About Time and Space Complexity (Big O Notation)",
+            "9. Learn DSA - Solve Easy LeetCode Problems on Arrays",
+            "10. Master Chess - Review Basic Checkmating Patterns (King & Rook, King & Queen)",
+            "11. Master Chess - Study Tactical Motifs (Forks, Pins, Skewers)",
+            "12. Master Chess - Play Games Against AI (Set to Intermediate Level)",
+            "13. Master Chess - Analyze One of Your Games (Identify Mistakes and Areas for Improvement)"
+       ],
+       "Habit Name"
+     ]
+
 **Output Array Format:**
-Return the final plan as an array where each element is a sub-array with a detailed schedule for that habit, and the corresponding habit name. Ensure that the activities include repetitive elements with variations to maintain engagement. Don't add anything else, just an array only.
+Return the final plan or task list as an array where each element is a sub-array with a detailed schedule for that habit or specific tasks, and the corresponding habit name. For "task," flatten the task list into a single 1D array, mixing tasks for engagement. Don't add anything else, just an array only.
 `;
 
                 const model = genAI.getGenerativeModel({
@@ -107,7 +143,9 @@ Return the final plan as an array where each element is a sub-array with a detai
                 });
 
                 const result = await chatSession.sendMessage(
-                    `${habit}, ${difficulty}`
+                    `${JSON.stringify(habit)}, ${difficulty}, ${
+                        isOn ? "task" : "day-plan"
+                    }`
                 );
 
                 // Process result
@@ -179,15 +217,21 @@ Return the final plan as an array where each element is a sub-array with a detai
                     What positive habit would you like to add to your daily
                     routine today?
                 </p>
-                <p className="text-md text-gray-500">Your Current Habits:</p>
+                <p className="text-md text-gray-500">Your Habits:</p>
                 <ul className="list-disc pl-5 space-y-2 text-center">
                     {habit.length ? (
                         habit.map((h, i) => (
                             <li
                                 key={i}
-                                className="flex items-center gap-4 bg-white p-3 rounded-lg shadow-sm"
+                                className={`flex items-center gap-4  p-3 rounded-lg shadow-sm ${
+                                    h[1] === 1
+                                        ? " bg-red-200"
+                                        : h[1] === 2
+                                        ? "bg-yellow-200"
+                                        : "bg-green-200"
+                                }`}
                             >
-                                <span className="text-gray-700">{h}</span>
+                                <span className="text-gray-700">{h[0]}</span>
                                 <button
                                     onClick={() =>
                                         setHabit(
@@ -230,7 +274,23 @@ Return the final plan as an array where each element is a sub-array with a detai
                 </form>
                 <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
                     <label className="text-md text-gray-600">
-                        How committed or experienced are you with this habit?
+                        How experienced are you with that habit?
+                    </label>
+                    <input
+                        type="range"
+                        min="1"
+                        max="3"
+                        name="difficulty"
+                        value={habitDifficulty}
+                        onChange={(e) =>
+                            setHabitDifficulty(parseInt(e.target.value))
+                        }
+                        className="w-full"
+                    />
+                </div>
+                <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
+                    <label className="text-md text-gray-600">
+                        How committed are you when the plan is generated?
                     </label>
                     <input
                         type="range"
@@ -244,6 +304,40 @@ Return the final plan as an array where each element is a sub-array with a detai
                         className="w-full"
                     />
                 </div>
+                <div className="flex items-center">
+                    <p className="mr-3">Day Plan</p>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={isOn}
+                            onChange={handleToggle}
+                            className="sr-only"
+                        />
+                        <div className="w-14 h-7 rounded-full flex items-center transition-colors duration-300 ease-in-out bg-blue-600">
+                            <div
+                                className={`w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center transform transition-transform duration-300 ease-in-out ${
+                                    isOn ? "translate-x-7" : "translate-x-1"
+                                }`}
+                            >
+                                <svg
+                                    className={`w-4 h-4 transition-transform duration-300 ease-in-out ${
+                                        isOn ? "rotate-90" : " -rotate-90"
+                                    }`}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M8 16l4-4 4 4" />
+                                </svg>
+                            </div>
+                        </div>
+                    </label>
+                    <p className="ml-3">Task</p>
+                </div>
                 <p className="text-sm text-gray-500 mt-4">
                     Remember to set achievable goals! 😊
                 </p>
@@ -251,7 +345,7 @@ Return the final plan as an array where each element is a sub-array with a detai
                     onClick={generateHabit}
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
                 >
-                    Generate Daily Plan
+                    Generate Plan
                 </button>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm w-full max-w-lg mt-6 flex flex-col items-center text-center">
