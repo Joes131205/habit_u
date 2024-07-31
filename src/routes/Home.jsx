@@ -148,21 +148,18 @@ Return the final plan or task list as an array where each element is a sub-array
                     }`
                 );
 
-                // Process result
                 const resultText = result.response.text();
                 console.log(resultText);
 
-                // Remove markdown code block notation if present
                 const cleanedResultText = resultText.replace(
                     /```json\s*([\s\S]*?)```/,
                     "$1"
                 );
                 console.log(cleanedResultText);
 
-                // Parse cleaned JSON text
                 const parsedResult = JSON.parse(cleanedResultText);
                 setGeneratedHabit(parsedResult);
-                toast.success("Plan Generated!");
+                toast.success("Plan Generated! (Scroll down)");
                 setGenerated(true);
                 setLoading(false);
             } catch (error) {
@@ -198,6 +195,7 @@ Return the final plan or task list as an array where each element is a sub-array
                 toast.error(
                     "Failed to save your habit plan. Please try again later."
                 );
+                setGenerated(false);
             }
         }
     };
@@ -214,18 +212,18 @@ Return the final plan or task list as an array where each element is a sub-array
             <h2 className="text-2xl font-bold text-gray-800">Welcome!</h2>
             <div className="flex flex-col items-center justify-center gap-8">
                 <p className="text-lg text-gray-600">
-                    What positive habit would you like to add to your daily
-                    routine today?
+                    What positive habit would you like to incorporate into your
+                    daily routine today?
                 </p>
                 <p className="text-md text-gray-500">Your Habits:</p>
-                <ul className="list-disc pl-5 space-y-2 text-center">
+                <ul className="list-disc pl-5 space-y-2 text-center items-center flex flex-wrap gap-10 ">
                     {habit.length ? (
                         habit.map((h, i) => (
                             <li
                                 key={i}
-                                className={`flex items-center gap-4  p-3 rounded-lg shadow-sm ${
+                                className={`flex items-center gap-4 p-3 rounded-lg shadow-sm ${
                                     h[1] === 1
-                                        ? " bg-red-200"
+                                        ? "bg-red-200"
                                         : h[1] === 2
                                         ? "bg-yellow-200"
                                         : "bg-green-200"
@@ -248,7 +246,7 @@ Return the final plan or task list as an array where each element is a sub-array
                         ))
                     ) : (
                         <p className="text-md text-gray-500">
-                            No habits added yet
+                            No habits added yet.
                         </p>
                     )}
                 </ul>
@@ -274,7 +272,7 @@ Return the final plan or task list as an array where each element is a sub-array
                 </form>
                 <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
                     <label className="text-md text-gray-600">
-                        How experienced are you with that habit?
+                        How experienced are you with this habit?
                     </label>
                     <input
                         type="range"
@@ -288,9 +286,11 @@ Return the final plan or task list as an array where each element is a sub-array
                         className="w-full"
                     />
                 </div>
+                <hr class="fading-hr" />
+
                 <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
                     <label className="text-md text-gray-600">
-                        How committed are you when the plan is generated?
+                        How committed are you to following the plan?
                     </label>
                     <input
                         type="range"
@@ -321,13 +321,13 @@ Return the final plan or task list as an array where each element is a sub-array
                             >
                                 <svg
                                     className={`w-4 h-4 transition-transform duration-300 ease-in-out ${
-                                        isOn ? "rotate-90" : " -rotate-90"
+                                        isOn ? "rotate-90" : "-rotate-90"
                                     }`}
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    strokeWidth="2"
+                                    strokeWidth="4"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
                                 >
@@ -339,7 +339,7 @@ Return the final plan or task list as an array where each element is a sub-array
                     <p className="ml-3">Task</p>
                 </div>
                 <p className="text-sm text-gray-500 mt-4">
-                    Remember to set achievable goals! 😊
+                    Set achievable goals and stay positive! 😊
                 </p>
                 <button
                     onClick={generateHabit}
@@ -348,35 +348,36 @@ Return the final plan or task list as an array where each element is a sub-array
                     Generate Plan
                 </button>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-sm w-full max-w-lg mt-6 flex flex-col items-center text-center">
-                <p className="text-lg text-gray-800 mb-2">Your Plan</p>
-                {loading ? (
-                    <p className="text-gray-500">Generating your plan...</p>
-                ) : (
-                    generatedHabit.length > 0 && (
-                        <>
-                            <p className="text-gray-700 mb-2 font-bold">
-                                {generatedHabit[1]}
-                            </p>
-                            <ul className="pl-5 space-y-2 list-none text-left">
-                                {generatedHabit[0].map((h, i) => (
-                                    <li key={i} className="text-gray-700">
-                                        {h}
-                                    </li>
-                                ))}
-                            </ul>
-                        </>
-                    )
-                )}
-                {generated ? (
+
+            {generated && (
+                <div className="bg-white p-4 rounded-lg shadow-sm w-full max-w-lg mt-6 flex flex-col items-center text-center">
+                    <p className="text-lg text-gray-800 mb-2">Your Plan</p>
+                    {loading ? (
+                        <p className="text-gray-500">Generating your plan...</p>
+                    ) : (
+                        generatedHabit.length > 0 && (
+                            <>
+                                <p className="text-gray-700 mb-2 font-bold">
+                                    {generatedHabit[1]}
+                                </p>
+                                <ul className="pl-5 space-y-2 list-none text-left">
+                                    {generatedHabit[0].map((h, i) => (
+                                        <li key={i} className="text-gray-700">
+                                            {h}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        )
+                    )}
                     <button
                         onClick={saveHabit}
                         className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition mt-4"
                     >
                         Save Plan
                     </button>
-                ) : null}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
