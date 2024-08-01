@@ -16,6 +16,7 @@ function Home() {
     const [loading, setLoading] = useState(false);
     const [habitDifficulty, setHabitDifficulty] = useState(1);
     const [isOn, setIsOn] = useState(false);
+    const [additionalInfo, setAdditionalInfo] = useState("");
 
     const handleToggle = () => {
         console.log("clicked");
@@ -54,74 +55,70 @@ function Home() {
 3. A flag indicating whether the habits are part of a "task" or a "day-plan":
    - "task" indicates a to-do list of activities
    - "day-plan" indicates a detailed daily schedule
+4. Additional information that may affect the plan. This information could include specifics such as preferred time of day for activities, constraints on activity durations, or any particular focus areas. If this value is empty or not provided, the plan should remain unchanged.
 
 **Output:**
-An array representing a highly detailed plan or task list that incorporates all the habits mentioned, adjusted according to the provided difficulty level and flag.
+An array representing a highly detailed plan or task list that incorporates all the habits mentioned, adjusted according to the provided difficulty level, flag, and additional information.
 
 **Instructions:**
 
 1. **Determine Schedule or Task List:**
-   - For "day-plan": Create a detailed schedule that covers a full day from morning to evening. Include specific time slots for each habit, ensuring there is enough time to meaningfully engage with each activity.
-   - For "task": Create a to-do list with specific tasks related to each habit.
+   - For "day-plan": Create a detailed schedule that covers a full day from morning to evening. Adjust the schedule based on additional information if provided.
+   - For "task": Create a to-do list with specific tasks related to each habit. Adjust the task list based on additional information if provided.
 
 2. **Adjust Habit Complexity Based on Difficulty Level:**
    - **Difficulty Level 1 (Beginner):**
-     - Focus on introductory activities and foundational tasks for each habit. For example, if the habit is "Learn Chinese," include basic vocabulary or simple exercises.
-     - Include regular breaks and rest periods to avoid overwhelming the user. Provide simple, step-by-step instructions.
-
+     - Focus on introductory activities and foundational tasks for each habit. Include regular breaks and rest periods to avoid overwhelming the user. Provide simple, step-by-step instructions.
    - **Difficulty Level 2 (Intermediate):**
-     - Incorporate more advanced tasks and intermediate exercises. For example, if the habit is "Learn DSA," include intermediate algorithms and practice problems.
-     - Provide moderate breaks and allow flexibility in the schedule or task list. Include intermediate-level challenges and exercises.
-
+     - Incorporate more advanced tasks and intermediate exercises. Provide moderate breaks and allow flexibility. Include intermediate-level challenges and exercises.
    - **Difficulty Level 3 (Advanced):**
-     - Design a plan or task list with advanced or expert-level tasks. For example, if the habit is "Learn Chinese," include advanced lessons, immersive activities, and complex exercises.
-     - Ensure ample time for deep work with minimal breaks. Incorporate complex challenges and expert-level exercises.
+     - Design a plan or task list with advanced or expert-level tasks. Ensure ample time for deep work with minimal breaks. Incorporate complex challenges and expert-level exercises.
 
-3. **Generate the Plan or Task List:**
-   - **For "day-plan":** Begin with a morning routine, such as waking up, breakfast, and initial preparation. Schedule detailed time blocks for each habit based on the difficulty level:
-     - **Morning:** Allocate time for complex or high-energy tasks, such as intensive study or advanced practice.
-     - **Afternoon:** Include tasks that require moderate focus or are less intensive, with detailed steps for each activity.
-     - **Evening:** End with less demanding tasks or review sessions, including specific goals and outcomes.
-   - **For "task":** Create a list of tasks for each habit, including specific actions or sub-tasks. Flatten the list into a single 1D array and mix the tasks for engagement.
+3. **Incorporate Additional Information:**
+   - Adjust the schedule or task list based on the additional information if provided:
+     - **Preferred Time of Day:** Adjust time slots to fit preferred activity times.
+     - **Activity Durations:** Modify the duration of tasks or activities based on any constraints or preferences.
+     - **Focus Areas:** Emphasize specific areas if additional focus is mentioned.
 
-   - Ensure to include specific times and durations for each activity or detailed steps for tasks. For example, if the habit is "Learn Chinese," list specific vocabulary or grammar points.
+4. **Generate the Plan or Task List:**
+   - **For "day-plan":** Begin with a morning routine, then schedule detailed time blocks for each habit based on difficulty and additional information. Adjust times and activities accordingly:
+     - **Morning:** Allocate time for complex or high-energy tasks.
+     - **Afternoon:** Include tasks that require moderate focus or are less intensive.
+     - **Evening:** End with less demanding tasks or review sessions.
+   - **For "task":** Create a list of tasks for each habit. Flatten the list into a single 1D array and mix tasks for engagement. Adjust tasks based on additional information if provided.
 
-4. **Format the Output:**
-   - **For "day-plan":** Present the plan in the format '[
-                    [Array], "Habit Name"
-                ]'. The array should include detailed time slots and corresponding activities, with repetitive yet varied tasks to avoid boredom.
-   - **For "task":** Present the task list in the format '[
-                    [Array], "Habit Name"
-                ]' with mixed tasks for engagement. 
-   - The habit name must be AI generated based on the plan, the plan name must be simple.
+5. **Format the Output:**
+   - **For "day-plan":** Present the plan as an array with each element representing a detailed time slot and corresponding activities. The format should be [
+    (Array, "Plan Name")
+], where the array includes detailed time slots and activities, and "Plan Name" is the name of the plan, you must customize it based on the habits given
+   - **For "task":** Present the task list as a single 1D array with mixed tasks for engagement. The array should be flattened from the original list and adjusted based on additional information if provided.
+
    - Example format for "day-plan":
      [
        ["6:00 AM - 6:30 AM: Wake Up and Morning Routine - Brush teeth, shower, and get dressed", "6:30 AM - 7:00 AM: Breakfast - Prepare and eat a healthy breakfast", "7:00 AM - 8:30 AM: Learn to Code - Beginner Tutorial on Variables (Read Chapter 1 and Complete Exercises)", "8:30 AM - 9:00 AM: Break - Take a walk or stretch", "9:00 AM - 11:00 AM: Cook Simple Recipe - Learn to make an omelet (Follow Recipe, Prepare Ingredients, Cook, and Clean Up)", "11:00 AM - 11:30 AM: Break - Relax or read", "11:30 AM - 1:00 PM: Study Basic Chinese - Learn HSK1 Vocab (Review List, Practice Pronunciation, Complete Quiz)", "1:00 PM - 2:00 PM: Lunch - Prepare and enjoy lunch", "2:00 PM - 4:00 PM: Practice Cooking Advanced Recipe - Learn to make a three-course meal (Plan Menu, Gather Ingredients, Cook Each Course, and Serve)", "4:00 PM - 4:30 PM: Break - Take a break or engage in light activity", "4:30 PM - 6:00 PM: Review Coding Concepts - Practice Bubble Sort (Read Article, Implement Algorithm, Test with Sample Data)", "6:00 PM - 7:00 PM: Dinner - Prepare and enjoy dinner", "7:00 PM - 8:30 PM: Study Advanced Chinese - Practice HSK4 Vocab (Review List, Engage in Conversation, Complete Advanced Exercises)", "8:30 PM - 9:00 PM: Relax and Wind Down - Light reading or meditation"], 
-       "Habit Name"
+       "Plan Name"
      ]
 
    - Example format for "task":
      [
-       [
-            "1. Fluent in Chinese - Review HSK3 & 4 Vocabulary (Focus on Characters and Meanings)",
-            "2. Fluent in Chinese - Practice Speaking with a Language Partner (Use New Vocabulary)",
-            "3. Fluent in Chinese - Complete an HSK4 Reading Comprehension Exercise",
-            "4. Fluent in Chinese - Write a Short Paragraph in Chinese on a Familiar Topic",
-            "5. Fluent in Chinese - Listen to a Chinese Podcast (Intermediate Level) and Summarize",
-            "6. Learn DSA - Study Basic Data Structures (Arrays, Linked Lists)",
-            "7. Learn DSA - Implement a Linked List in Python/Java",
-            "8. Learn DSA - Learn About Time and Space Complexity (Big O Notation)",
-            "9. Learn DSA - Solve Easy LeetCode Problems on Arrays",
-            "10. Master Chess - Review Basic Checkmating Patterns (King & Rook, King & Queen)",
-            "11. Master Chess - Study Tactical Motifs (Forks, Pins, Skewers)",
-            "12. Master Chess - Play Games Against AI (Set to Intermediate Level)",
-            "13. Master Chess - Analyze One of Your Games (Identify Mistakes and Areas for Improvement)"
-       ],
-       "Habit Name"
+[       "1. Fluent in Chinese - Review HSK3 & 4 Vocabulary (Focus on Characters and Meanings)",
+       "2. Fluent in Chinese - Practice Speaking with a Language Partner (Use New Vocabulary)",
+       "3. Fluent in Chinese - Complete an HSK4 Reading Comprehension Exercise",
+       "4. Fluent in Chinese - Write a Short Paragraph in Chinese on a Familiar Topic",
+       "5. Fluent in Chinese - Listen to a Chinese Podcast (Intermediate Level) and Summarize",
+       "6. Learn DSA - Study Basic Data Structures (Arrays, Linked Lists)",
+       "7. Learn DSA - Implement a Linked List in Python/Java",
+       "8. Learn DSA - Learn About Time and Space Complexity (Big O Notation)",
+       "9. Learn DSA - Solve Easy LeetCode Problems on Arrays",
+       "10. Master Chess - Review Basic Checkmating Patterns (King & Rook, King & Queen)",
+       "11. Master Chess - Study Tactical Motifs (Forks, Pins, Skewers)",
+       "12. Master Chess - Play Games Against AI (Set to Intermediate Level)",
+       "13. Master Chess - Analyze One of Your Games (Identify Mistakes and Areas for Improvement)"]
+       , "Plan Name"
      ]
 
 **Output Array Format:**
-Return the final plan or task list as an array where each element is a sub-array with a detailed schedule for that habit or specific tasks, and the corresponding habit name. For "task," flatten the task list into a single 1D array, mixing tasks for engagement. Don't add anything else, just an array only.
+Return the final plan or task list as an array where each element is a sub-array with a detailed schedule for that habit or specific tasks, and the corresponding habit name. For "task," flatten the task list into a single 1D array, mixing tasks for engagement and adjusting based on additional information if provided. Don't add anything else, just an array only.
 `;
 
                 const model = genAI.getGenerativeModel({
@@ -145,7 +142,7 @@ Return the final plan or task list as an array where each element is a sub-array
                 const result = await chatSession.sendMessage(
                     `${JSON.stringify(habit)}, ${difficulty}, ${
                         isOn ? "task" : "day-plan"
-                    }`
+                    }, ${additionalInfo}`
                 );
 
                 const resultText = result.response.text();
@@ -337,6 +334,19 @@ Return the final plan or task list as an array where each element is a sub-array
                         </div>
                     </label>
                     <p className="ml-3">Task</p>
+                </div>
+                <hr class="fading-hr" />
+
+                <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
+                    <label className="text-md text-gray-600">
+                        Have any additional / extra info?
+                    </label>
+                    <textarea
+                        value={additionalInfo}
+                        onChange={(e) => setAdditionalInfo(e.target.value)}
+                        className="w-full border-2 border-black rounded-md"
+                        placeholder="Additional Info..."
+                    />
                 </div>
                 <p className="text-sm text-gray-500 mt-4">
                     Set achievable goals and stay positive! 😊
