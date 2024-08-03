@@ -86,6 +86,36 @@ function Register() {
                     isEmailVerified: user.emailVerified,
                     uid: user.uid,
                     emailVerified: user.emailVerified,
+                    weekly: [
+                        {
+                            day: "Monday",
+                            plan: [],
+                        },
+                        {
+                            day: "Tuesday",
+                            plan: [],
+                        },
+                        {
+                            day: "Wednesday",
+                            plan: [],
+                        },
+                        {
+                            day: "Thursday",
+                            plan: [],
+                        },
+                        {
+                            day: "Friday",
+                            plan: [],
+                        },
+                        {
+                            day: "Saturday",
+                            plan: [],
+                        },
+                        {
+                            day: "Sunday",
+                            plan: [],
+                        },
+                    ],
                 });
             }
 

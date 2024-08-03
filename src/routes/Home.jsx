@@ -283,7 +283,7 @@ Return the final plan or task list as an array where each element is a sub-array
                         className="w-full"
                     />
                 </div>
-                <hr class="fading-hr" />
+                <hr className="fading-hr" />
 
                 <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
                     <label className="text-md text-gray-600">
@@ -335,7 +335,7 @@ Return the final plan or task list as an array where each element is a sub-array
                     </label>
                     <p className="ml-3">Task</p>
                 </div>
-                <hr class="fading-hr" />
+                <hr className="fading-hr" />
 
                 <div className="flex flex-col items-center gap-4 bg-white p-4 rounded-lg shadow-sm w-full max-w-md">
                     <label className="text-md text-gray-600">

@@ -7,6 +7,8 @@ import History from "./routes/History.jsx";
 import Landing from "./routes/Landing.jsx";
 import Login from "./routes/Login.jsx";
 import Register from "./routes/Register.jsx";
+import Week from "./routes/Week.jsx";
+
 import ErrorPage from "./routes/ErrorPage.jsx";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -33,6 +35,7 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/weekly" element={<Week />} />
             <Route path="error/:id" element={<ErrorPage />} />
             <Route path="*" element={<Navigate to="/error/404" replace />} />
         </Routes>
@@ -67,6 +70,14 @@ function App() {
                                     className="text-white hover:text-gray-400 transition"
                                 >
                                     Inventory
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/weekly"
+                                    className="text-white hover:text-gray-400 transition"
+                                >
+                                    Week Plan
                                 </a>
                             </li>
                             <li>

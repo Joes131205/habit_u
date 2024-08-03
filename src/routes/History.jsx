@@ -16,7 +16,8 @@ function History() {
     const [habits, setHabits] = useState([]);
     const [uid, setUid] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [open, setOpen] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [weekModal, setWeekModal] = useState(false);
     const [selectedHabitId, setSelectedHabitId] = useState(null);
     const navigate = useNavigate();
 
@@ -67,7 +68,7 @@ function History() {
             try {
                 await deleteDoc(doc(db, "habits", selectedHabitId));
                 setHabits(habits.filter((item) => item.id !== selectedHabitId));
-                setOpen(false);
+                setDeleteModal(false);
                 setSelectedHabitId(null);
                 toast.success("Plan deleted!");
             } catch (error) {
@@ -75,14 +76,31 @@ function History() {
             }
         }
     };
-
-    const openModal = (id) => {
+    const setPlanOnDay = async () => {
+        if (selectedHabitId) {
+            try {
+                const habit = habits.find(
+                    (item) => item.id === selectedHabitId
+                );
+            } catch (error) {}
+        }
+    };
+    const openWeekModal = (id) => {
         setSelectedHabitId(id);
-        setOpen(true);
+        setWeekModal(true);
     };
 
-    const closeModal = () => {
-        setOpen(false);
+    const closeWeekModal = () => {
+        setWeekModal(false);
+        setSelectedHabitId(null);
+    };
+    const openDeleteModal = (id) => {
+        setSelectedHabitId(id);
+        setDeleteModal(true);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModal(false);
         setSelectedHabitId(null);
     };
 
@@ -115,7 +133,16 @@ function History() {
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    openModal(habit.id);
+                                    openWeekModal(habit.id);
+                                }}
+                                className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                            >
+                                Save to weekly plan
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openDeleteModal(habit.id);
                                 }}
                                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                             >
@@ -131,7 +158,7 @@ function History() {
                 </p>
             )}
             {/* Modal */}
-            {open && (
+            {deleteModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
                     <div className="relative w-2/5 max-w-lg p-6 bg-white rounded-lg shadow-lg">
                         <h3 className="text-lg font-semibold mb-4">
@@ -143,7 +170,7 @@ function History() {
                         </p>
                         <div className="flex justify-end gap-4">
                             <button
-                                onClick={closeModal}
+                                onClick={closeDeleteModal}
                                 className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
                             >
                                 Cancel
@@ -155,6 +182,39 @@ function History() {
                                 Confirm
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {weekModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                    <div className="relative w-2/5 max-w-lg p-6 bg-white rounded-lg shadow-lg">
+                        <h3 className="text-lg font-semibold mb-4">
+                            Save to weekly plan
+                        </h3>
+                        <p className="mb-6">
+                            What day of week would you like to save this plan
+                            into?
+                        </p>
+
+                        <form onSubmit={setPlanOnDay}>
+                            <select>
+                                <option value={"Monday"}>Monday</option>
+                                <option value={"Tuesday"}>Tuesday</option>
+                                <option value={"Wednesday"}>Wednesday</option>
+                                <option value={"Thursday"}>Thursday</option>
+                                <option value={"Friday"}>Friday</option>
+                                <option value={"Saturday"}>Saturday</option>
+                                <option value={"Sunday"}>Sunday</option>
+                            </select>
+                            <input type="submit" />
+                        </form>
+                        <button
+                            onClick={closeWeekModal}
+                            className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             )}
