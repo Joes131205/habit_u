@@ -64,31 +64,31 @@ function Login() {
                     weekly: [
                         {
                             day: "Monday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Tuesday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Wednesday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Thursday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Friday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Saturday",
-                            plan: [],
+                            planId: "",
                         },
                         {
                             day: "Sunday",
-                            plan: [],
+                            planId: "",
                         },
                     ],
                 });

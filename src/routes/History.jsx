@@ -8,6 +8,8 @@ import {
     getDocs,
     deleteDoc,
     doc,
+    updateDoc,
+    getDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -19,6 +21,8 @@ function History() {
     const [deleteModal, setDeleteModal] = useState(false);
     const [weekModal, setWeekModal] = useState(false);
     const [selectedHabitId, setSelectedHabitId] = useState(null);
+    const [day, setDay] = useState("Monday");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -76,13 +80,22 @@ function History() {
             }
         }
     };
-    const setPlanOnDay = async () => {
+    const setPlanOnDay = async (e) => {
+        e.preventDefault();
         if (selectedHabitId) {
             try {
                 const habit = habits.find(
                     (item) => item.id === selectedHabitId
                 );
-            } catch (error) {}
+                const docRef = doc(db, "users", auth.currentUser.uid);
+                const docSnap = await getDoc(docRef);
+                const data = docSnap.data();
+                const index = data.weekly.findIndex((item) => item.day === day);
+                data.weekly[index].planId = habit.id;
+                await updateDoc(docRef, data);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
     const openWeekModal = (id) => {
@@ -198,7 +211,10 @@ function History() {
                         </p>
 
                         <form onSubmit={setPlanOnDay}>
-                            <select>
+                            <select
+                                value={day}
+                                onChange={(e) => setDay(e.target.value)}
+                            >
                                 <option value={"Monday"}>Monday</option>
                                 <option value={"Tuesday"}>Tuesday</option>
                                 <option value={"Wednesday"}>Wednesday</option>
