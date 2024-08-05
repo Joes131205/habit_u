@@ -74,6 +74,18 @@ function History() {
                 setHabits(habits.filter((item) => item.id !== selectedHabitId));
                 setDeleteModal(false);
                 setSelectedHabitId(null);
+
+                const docRef = doc(db, "users", auth.currentUser.uid);
+                const docSnap = await getDoc(docRef);
+                const data = docSnap.data();
+
+                data.weekly = data.weekly.map((item) => {
+                    if (item.planId === selectedHabitId) {
+                        return { ...item, planId: "" };
+                    }
+                    return item;
+                });
+                await updateDoc(docRef, data);
                 toast.success("Plan deleted!");
             } catch (error) {
                 console.log(error);
