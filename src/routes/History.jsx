@@ -99,14 +99,18 @@ function History() {
                 const habit = habits.find(
                     (item) => item.id === selectedHabitId
                 );
+                console.log(habit);
                 const docRef = doc(db, "users", auth.currentUser.uid);
                 const docSnap = await getDoc(docRef);
                 const data = docSnap.data();
                 const index = data.weekly.findIndex((item) => item.day === day);
                 data.weekly[index].planId = habit.id;
                 await updateDoc(docRef, data);
+                toast.success(
+                    `Plan for ${habit.data.habitName} saved to ${day}!`
+                );
             } catch (error) {
-                console.log(error);
+                toast.error("Plan failed to save!");
             }
         }
     };
@@ -213,36 +217,48 @@ function History() {
 
             {weekModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-                    <div className="relative w-2/5 max-w-lg p-6 bg-white rounded-lg shadow-lg">
-                        <h3 className="text-lg font-semibold mb-4">
-                            Save to weekly plan
+                    <div className="relative w-4/5 max-w-md p-6 bg-white rounded-lg shadow-lg">
+                        <h3 className="text-2xl font-semibold mb-4 text-gray-800">
+                            Save to Weekly Plan
                         </h3>
-                        <p className="mb-6">
-                            What day of week would you like to save this plan
-                            into?
+                        <p className="mb-6 text-gray-600">
+                            What day of the week would you like to save this
+                            plan into?
                         </p>
 
-                        <form onSubmit={setPlanOnDay}>
+                        <form
+                            onSubmit={setPlanOnDay}
+                            className="flex flex-col space-y-4"
+                        >
                             <select
                                 value={day}
                                 onChange={(e) => setDay(e.target.value)}
+                                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value={"Monday"}>Monday</option>
-                                <option value={"Tuesday"}>Tuesday</option>
-                                <option value={"Wednesday"}>Wednesday</option>
-                                <option value={"Thursday"}>Thursday</option>
-                                <option value={"Friday"}>Friday</option>
-                                <option value={"Saturday"}>Saturday</option>
-                                <option value={"Sunday"}>Sunday</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
                             </select>
-                            <input type="submit" />
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={closeWeekModal}
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </form>
-                        <button
-                            onClick={closeWeekModal}
-                            className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                        >
-                            Cancel
-                        </button>
                     </div>
                 </div>
             )}

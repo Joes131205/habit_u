@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 import { auth, db, storage } from "../firebase";
 
-import { addDoc, collection, doc } from "firebase/firestore";
+import { addDoc, collection, doc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import toast from "react-hot-toast";
@@ -19,7 +19,6 @@ function Home() {
     const [additionalInfo, setAdditionalInfo] = useState("");
 
     const handleToggle = () => {
-        console.log("clicked");
         setIsOn((prevState) => !prevState);
     };
     const navigate = useNavigate();
@@ -180,6 +179,8 @@ Return the final plan or task list as an array where each element is a sub-array
                     habitName: generatedHabit[1],
                     completed: 0,
                     lastCompleted: "",
+                    public: false,
+                    createdAt: serverTimestamp(),
                 };
                 const docRef = collection(db, "habits");
                 await addDoc(docRef, habitsData);
