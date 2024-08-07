@@ -12,20 +12,46 @@ import Week from "./routes/Week.jsx";
 import ErrorPage from "./routes/ErrorPage.jsx";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 import toast, { Toaster } from "react-hot-toast";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
+    const [streak, setStreak] = useState(0);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+    function calculateStreak(completionDates) {
+        let streak = 0;
+        completionDates.sort((a, b) => new Date(a) - new Date(b));
+        for (let i = 1; i < completionDates.length; i++) {
+          const prevDate = new Date(completionDates[i - 1]);
+          const currentDate = new Date(completionDates[i]);
+          const diffInDays = Math.round((currentDate - prevDate) / (1000 * 60 * 60 * 24)); 
+          if (diffInDays === 1) {
+            streak++;
+          } else {
+            streak = 0;
+          }
+        }
+        return streak;
+      }
+
+      useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setLoggedIn(true);
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+                const userData = userDocSnap.data(); 
+                const streak = calculateStreak(userData.completionDates);
+                setStreak(streak)
+            } else {
+                setLoggedIn(false); 
             }
         });
+        return () => unsubscribe(); 
     }, []);
+    //
 
     const routes = (
         <Routes>
@@ -79,6 +105,10 @@ function App() {
                                 >
                                     Week Plan
                                 </a>
+                            </li>
+                            <li>
+                                
+                                    Streak: {streak}
                             </li>
                             <li>
                                 <a

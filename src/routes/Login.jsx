@@ -91,6 +91,8 @@ function Login() {
                             planId: "",
                         },
                     ],
+                    completionDates: []
+
                 });
             }
 

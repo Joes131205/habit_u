@@ -45,6 +45,37 @@ function Register() {
                 isEmailVerified: false,
                 uid: userCredential.user.uid,
                 emailVerified: userCredential.user.emailVerified,
+                weekly: [
+                    {
+                        day: "Monday",
+                        planId: "",
+                    },
+                    {
+                        day: "Tuesday",
+                        planId: "",
+                    },
+                    {
+                        day: "Wednesday",
+                        planId: "",
+                    },
+                    {
+                        day: "Thursday",
+                        planId: "",
+                    },
+                    {
+                        day: "Friday",
+                        planId: "",
+                    },
+                    {
+                        day: "Saturday",
+                        planId: "",
+                    },
+                    {
+                        day: "Sunday",
+                        planId: "",
+                    },
+                ],
+                completionDates: []
             });
 
             await sendEmailVerification(userCredential.user);
@@ -116,6 +147,7 @@ function Register() {
                             planId: "",
                         },
                     ],
+                    completionDates: []
                 });
             }
 

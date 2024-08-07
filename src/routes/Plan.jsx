@@ -153,6 +153,18 @@ function Plan() {
                                                 lastCompleted: date,
                                                 completed: data.completed + 1,
                                             });
+
+                                            const userDocRef = doc(db, "users", auth.currentUser.uid); // Get user document
+                                            const userDocSnap = await getDoc(userDocRef);
+                                            const userData = userDocSnap.data();
+
+                                            const today = new Date();
+                                            const date = today.toISOString().split("T")[0];
+
+                                            await updateDoc(userDocRef, { 
+                                              completionDates: [...userData.completionDates, date], 
+                                            }); 
+                                                                                      
                                             toast.success(
                                                 "Plan done! Congratulations!"
                                             );
