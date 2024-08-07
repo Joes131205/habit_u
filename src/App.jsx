@@ -12,6 +12,7 @@ import Week from "./routes/Week.jsx";
 import ErrorPage from "./routes/ErrorPage.jsx";
 
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase.js";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -21,35 +22,45 @@ function App() {
     const navigate = useNavigate();
 
     function calculateStreak(completionDates) {
-        let streak = 0;
+        let streak = 1;
+        console.log(completionDates);
+        if (completionDates.length === 0) {
+            return 0;
+        }
+        if (completionDates.length === 1) {
+            return 1;
+        }
         completionDates.sort((a, b) => new Date(a) - new Date(b));
         for (let i = 1; i < completionDates.length; i++) {
-          const prevDate = new Date(completionDates[i - 1]);
-          const currentDate = new Date(completionDates[i]);
-          const diffInDays = Math.round((currentDate - prevDate) / (1000 * 60 * 60 * 24)); 
-          if (diffInDays === 1) {
-            streak++;
-          } else {
-            streak = 0;
-          }
+            const prevDate = new Date(completionDates[i - 1]);
+            const currentDate = new Date(completionDates[i]);
+            const diffInDays = Math.round(
+                (currentDate - prevDate) / (1000 * 60 * 60 * 24)
+            );
+            if (diffInDays === 1) {
+                streak++;
+            } else {
+                streak = 0;
+            }
         }
         return streak;
-      }
+    }
 
-      useEffect(() => {
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setLoggedIn(true);
                 const userDocRef = doc(db, "users", user.uid);
                 const userDocSnap = await getDoc(userDocRef);
-                const userData = userDocSnap.data(); 
+                const userData = userDocSnap.data();
+                console.log(userData);
                 const streak = calculateStreak(userData.completionDates);
-                setStreak(streak)
+                setStreak(streak);
             } else {
-                setLoggedIn(false); 
+                setLoggedIn(false);
             }
         });
-        return () => unsubscribe(); 
+        return () => unsubscribe();
     }, []);
     //
 
@@ -106,9 +117,8 @@ function App() {
                                     Week Plan
                                 </a>
                             </li>
-                            <li>
-                                
-                                    Streak: {streak}
+                            <li className="text-white transition">
+                                Streak: {streak}
                             </li>
                             <li>
                                 <a

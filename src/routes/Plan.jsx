@@ -154,17 +154,28 @@ function Plan() {
                                                 completed: data.completed + 1,
                                             });
 
-                                            const userDocRef = doc(db, "users", auth.currentUser.uid); // Get user document
-                                            const userDocSnap = await getDoc(userDocRef);
+                                            const userDocRef = doc(
+                                                db,
+                                                "users",
+                                                auth.currentUser.uid
+                                            ); // Get user document
+                                            const userDocSnap = await getDoc(
+                                                userDocRef
+                                            );
                                             const userData = userDocSnap.data();
 
                                             const today = new Date();
-                                            const date = today.toISOString().split("T")[0];
+                                            const date2 = today
+                                                .toISOString()
+                                                .split("T")[0];
 
-                                            await updateDoc(userDocRef, { 
-                                              completionDates: [...userData.completionDates, date], 
-                                            }); 
-                                                                                      
+                                            await updateDoc(userDocRef, {
+                                                completionDates: [
+                                                    ...userData.completionDates,
+                                                    date2,
+                                                ],
+                                            });
+
                                             toast.success(
                                                 "Plan done! Congratulations!"
                                             );
