@@ -91,8 +91,7 @@ function Login() {
                             planId: "",
                         },
                     ],
-                    completionDates: []
-
+                    completionDates: [],
                 });
             }
 
@@ -126,7 +125,7 @@ function Login() {
         document.title = `Habit-U | Log In`;
     });
     return (
-        <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
+        <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen gap-10">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Login</h1>
             <form
                 onSubmit={handleLogin}
@@ -154,18 +153,18 @@ function Login() {
                 >
                     Login
                 </button>
-                <button
-                    onClick={handleSignInWithGoogle}
-                    className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
-                >
-                    <img
-                        src="/images/google-color-svgrepo-com.svg"
-                        alt="Google Icon"
-                        className="w-5 h-5"
-                    />
-                    Sign In With Google
-                </button>
             </form>
+            <button
+                onClick={handleSignInWithGoogle}
+                className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
+            >
+                <img
+                    src="/images/google-color-svgrepo-com.svg"
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                />
+                Sign In With Google
+            </button>
         </div>
     );
 }

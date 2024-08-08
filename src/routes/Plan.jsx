@@ -158,7 +158,7 @@ function Plan() {
                                                 db,
                                                 "users",
                                                 auth.currentUser.uid
-                                            ); // Get user document
+                                            );
                                             const userDocSnap = await getDoc(
                                                 userDocRef
                                             );

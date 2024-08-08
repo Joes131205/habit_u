@@ -19,18 +19,27 @@ import toast, { Toaster } from "react-hot-toast";
 function App() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [streak, setStreak] = useState(0);
+    const [todayStreak, setTodayStreak] = useState(false);
     const navigate = useNavigate();
 
     function calculateStreak(completionDates) {
         let streak = 1;
-        console.log(completionDates);
+        const today = new Date();
+        const date = today.toISOString().split("T")[0];
+        console.log(completionDates, date);
         if (completionDates.length === 0) {
             return 0;
         }
         if (completionDates.length === 1) {
+            if (completionDates.includes(date)) {
+                setTodayStreak(true);
+            }
             return 1;
         }
         completionDates.sort((a, b) => new Date(a) - new Date(b));
+        if (completionDates.includes(date)) {
+            setTodayStreak(true);
+        }
         for (let i = 1; i < completionDates.length; i++) {
             const prevDate = new Date(completionDates[i - 1]);
             const currentDate = new Date(completionDates[i]);
@@ -62,7 +71,6 @@ function App() {
         });
         return () => unsubscribe();
     }, []);
-    //
 
     const routes = (
         <Routes>
@@ -86,7 +94,7 @@ function App() {
     return (
         <div className="text-xs md:text-lg">
             <Toaster />
-            <nav className="bg-gray-800 p-4">
+            <nav className="bg-gray-600 p-4">
                 <ul className="flex flex-row gap-8 items-center">
                     <li className="text-white text-xl font-semibold">
                         <a href="/">Habit-U</a>
@@ -106,7 +114,7 @@ function App() {
                                     href="/history"
                                     className="text-white hover:text-gray-400 transition"
                                 >
-                                    Inventory
+                                    Your Plan
                                 </a>
                             </li>
                             <li>
@@ -114,18 +122,40 @@ function App() {
                                     href="/weekly"
                                     className="text-white hover:text-gray-400 transition"
                                 >
-                                    Week Plan
+                                    Weekly Plan
                                 </a>
                             </li>
-                            <li className="text-white transition">
-                                Streak: {streak}
+                            <li className="text-white transition flex gap-2 items-center">
+                                {todayStreak ? (
+                                    <img
+                                        src="images/flame.svg"
+                                        className="w-5 h-5"
+                                    />
+                                ) : (
+                                    <img
+                                        src="images/flame-outline.svg"
+                                        className="w-5 h-5"
+                                    />
+                                )}
+                                {streak}
+                                {todayStreak ? (
+                                    <img
+                                        src="images/flame.svg"
+                                        className="w-5 h-5"
+                                    />
+                                ) : (
+                                    <img
+                                        src="images/flame-outline.svg"
+                                        className="w-5 h-5"
+                                    />
+                                )}
                             </li>
                             <li>
                                 <a
                                     onClick={logOutUser}
                                     className="text-white hover:text-gray-400 cursor-pointer transition"
                                 >
-                                    Log Out
+                                    Sign Out
                                 </a>
                             </li>
                         </>

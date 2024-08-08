@@ -20,6 +20,7 @@ function Register() {
     const provider = new GoogleAuthProvider();
 
     const [inputData, setInputData] = useState({
+        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -27,11 +28,26 @@ function Register() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!inputData.password) {
+            toast.error("Please enter a password.");
+            return;
+        }
+        if (!inputData.username) {
+            toast.error("Please enter a username.");
+            return;
+        }
+        if (!inputData.email) {
+            toast.error("Please enter your email address.");
+            return;
+        }
+        if (!inputData.confirmPassword) {
+            toast.error("Please confirm your password.");
+            return;
+        }
         if (inputData.password !== inputData.confirmPassword) {
             toast.error("Passwords do not match. Please try again.");
             return;
         }
-
         try {
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
@@ -41,6 +57,7 @@ function Register() {
 
             const userRef = doc(db, "users", userCredential.user.uid);
             await setDoc(userRef, {
+                username: inputData.username,
                 email: inputData.email,
                 isEmailVerified: false,
                 uid: userCredential.user.uid,
@@ -75,7 +92,7 @@ function Register() {
                         planId: "",
                     },
                 ],
-                completionDates: []
+                completionDates: [],
             });
 
             await sendEmailVerification(userCredential.user);
@@ -147,7 +164,7 @@ function Register() {
                             planId: "",
                         },
                     ],
-                    completionDates: []
+                    completionDates: [],
                 });
             }
 
@@ -182,12 +199,20 @@ function Register() {
     });
 
     return (
-        <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen">
+        <div className="flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen gap-10">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">Register</h1>
             <form
                 onSubmit={handleSubmit}
                 className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4 flex flex-col gap-4"
             >
+                <input
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    value={inputData.username}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg px-4 py-2 w-full"
+                />
                 <input
                     type="text"
                     placeholder="Email"
@@ -218,18 +243,18 @@ function Register() {
                 >
                     Register
                 </button>
-                <button
-                    onClick={handleRegisterWithGoogle}
-                    className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
-                >
-                    <img
-                        src="/images/google-color-svgrepo-com.svg"
-                        alt="Google Icon"
-                        className="w-5 h-5"
-                    />
-                    Register With Google
-                </button>
             </form>
+            <button
+                onClick={handleRegisterWithGoogle}
+                className="flex gap-5 items-center justify-center bg-white text-black px-5 py-2 font-bold rounded-md hover:bg-gray-200 transition border-2 border-black"
+            >
+                <img
+                    src="/images/google-color-svgrepo-com.svg"
+                    alt="Google Icon"
+                    className="w-5 h-5"
+                />
+                Register With Google
+            </button>
         </div>
     );
 }
