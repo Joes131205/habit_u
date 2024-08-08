@@ -95,8 +95,8 @@ function App() {
         <div className="text-xs md:text-lg">
             <Toaster />
             <nav className="bg-gray-600 p-4">
-                <ul className="flex flex-row gap-8 items-center">
-                    <li className="text-white text-xl font-semibold">
+                <ul className="flex text-xs md:text-xl flex-row gap-8 items-center">
+                    <li className="text-white  font-semibold md:text-xl">
                         <a href="/">Habit-U</a>
                     </li>
                     {loggedIn ? (
